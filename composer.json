@@ -1,0 +1,27 @@
+{
+    "name": "slavcodev/yii-bridge",
+    "description": "Yii bridge between v1.1.x and v2.0",
+    "keywords": ["yii2", "yii1"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/slavcodev/yii-bridge/issues",
+        "forum": "http://www.yiiframework.ru/forum/",
+        "source": "https://github.com/slavcodev/yii-bridge"
+    },
+    "authors": [
+        {
+            "name": "Veaceslav Medvedev",
+            "email": "slavcopost@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "yiisoft/yii": "1.1.16-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Slavcodev\\YiiBridge\\": ""
+        }
+    }
+}
