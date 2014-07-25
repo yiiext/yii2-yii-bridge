@@ -17,7 +17,7 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "yiisoft/yii": "1.1.16-dev"
+        "yiisoft/yii": ">=1.1.16"
     },
     "autoload": {
         "psr-4": {
