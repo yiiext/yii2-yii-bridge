@@ -50,7 +50,7 @@ class ActiveQuery extends BaseActiveQuery
     {
         $cmd = $this->createCommand($db);
         $row = $this->finder->findBySql($cmd->getSql(), $cmd->params);
-        $rows = $this->prepareResult([$row]);
+        $rows = $this->prepareResult($row ? [$row] : []);
         return reset($rows) ?: null;
     }
 
