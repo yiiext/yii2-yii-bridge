@@ -97,21 +97,38 @@ class ActiveQuery extends BaseActiveQuery
     }
 
     /**
-     * @param CActiveRecord $model
+     * @param CActiveRecord|mixed $primaryModel
      * @param string $name
      *
      * @return self
      */
-    private function getRelatedQuery($model, $name)
+    private function getRelatedQuery($primaryModel, $name)
     {
-        $relation = $this->finder->getActiveRelation($name);
-        $table = $this->finder->getMetaData()->tableSchema;
+        $relation = $primaryModel->getActiveRelation($name);
+        $table = $primaryModel->getMetaData()->tableSchema;
 
         $query = new self($relation->className);
-        $query->primaryModel = $model;
-        $query->link = [$table->primaryKey => $relation->foreignKey];
         $query->multiple = $relation instanceof \CHasManyRelation;
+        $query->primaryModel = $primaryModel;
+
+        if (isset($relation->through)) {
+            $query->via($relation->through);
+            $query->link = [current($relation->foreignKey) => key($relation->foreignKey)];
+        } else {
+            $query->link = [$table->primaryKey => $relation->foreignKey];
+        }
+
         return $query;
+    }
+
+    public function via($relationName, callable $callable = null)
+    {
+        $relation = $this->getRelatedQuery($this->primaryModel, $relationName);
+        $this->via = [$relationName, $relation];
+        if ($callable !== null) {
+            call_user_func($callable, $relation);
+        }
+        return $this;
     }
 
     /**
@@ -240,6 +257,7 @@ class ActiveQuery extends BaseActiveQuery
                 $name = $callback;
                 $callback = null;
             }
+
 
             $primaryModel = $model;
             $parent = $this;
