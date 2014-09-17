@@ -15,6 +15,8 @@ use yii\db\ActiveQuery as BaseActiveQuery;
 /**
  * Class ActiveQuery
  *
+ * @todo See changes https://github.com/yiisoft/yii2/commits/master/framework/db/ActiveQuery.php
+ *
  * @author Veaceslav Medvedev <slavcopost@gmail.com>
  * @version 0.1
  */
@@ -38,7 +40,7 @@ class ActiveQuery extends BaseActiveQuery
     {
         $cmd = $this->createCommand($db);
         $rows = $this->finder->findAllBySql($cmd->getSql(), $cmd->params);
-        return $this->prepareResult($rows);
+        return $this->populate($rows);
     }
 
     /**
@@ -50,8 +52,36 @@ class ActiveQuery extends BaseActiveQuery
     {
         $cmd = $this->createCommand($db);
         $row = $this->finder->findBySql($cmd->getSql(), $cmd->params);
-        $rows = $this->prepareResult($row ? [$row] : []);
-        return reset($rows) ?: null;
+        if ($row !== null) {
+            $models = $this->populate([$row]);
+            return reset($models) ?: null;
+        } else {
+            return null;
+        }
+    }
+
+    public function createCommand($db = null)
+    {
+        if ($db === null) {
+            $db = Yii::$app->getDb();
+        }
+
+        return parent::createCommand($db);
+    }
+
+    public function prepare($builder)
+    {
+        // override private `buildJoinWith()`
+        if (!empty($this->joinWith)) {
+            $this->buildJoinWith();
+            $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+        }
+
+        if (empty($this->from)) {
+            $this->from = [$this->finder->tableName()];
+        }
+
+        return parent::prepare($builder);
     }
 
     /**
@@ -59,7 +89,7 @@ class ActiveQuery extends BaseActiveQuery
      *
      * @return array|CActiveRecord[]
      */
-    public function prepareResult($rows)
+    public function populate($rows)
     {
         if (empty($rows)) {
             return [];
@@ -178,29 +208,6 @@ class ActiveQuery extends BaseActiveQuery
         }
     }
 
-    public function prepareBuild($builder)
-    {
-        if (empty($this->from)) {
-            $this->from = [$this->finder->tableName()];
-        }
-
-        parent::prepareBuild($builder);
-    }
-
-    public function createCommand($db = null)
-    {
-        if ($db === null) {
-            $db = Yii::$app->getDb();
-        }
-
-        if (!empty($this->joinWith)) {
-            $this->buildJoinWith();
-            $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
-        }
-
-        return parent::createCommand($db);
-    }
-
     private function buildJoinWith()
     {
         $join = $this->join;
@@ -285,6 +292,10 @@ class ActiveQuery extends BaseActiveQuery
 
                 if ($callback !== null) {
                     call_user_func($callback, $relation);
+                }
+
+                if (!empty($relation->joinWith)) {
+                    $relation->buildJoinWith();
                 }
 
                 $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
