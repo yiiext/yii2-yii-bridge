@@ -23,7 +23,7 @@ use yii\db\ActiveQuery as BaseActiveQuery;
 class ActiveQuery extends BaseActiveQuery
 {
     /** @var \CActiveRecord */
-    private $finder;
+    protected $finder;
 
     public function __construct($modelClass, $config = [])
     {
