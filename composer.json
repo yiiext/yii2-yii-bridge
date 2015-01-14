@@ -1,5 +1,5 @@
 {
-    "name": "slavcodev/yii-bridge",
+    "name": "slavcodev/yii2-yii-bridge",
     "description": "Yii bridge between v1.1.x and v2.0",
     "keywords": ["yii2", "yii1"],
     "type": "yii2-extension",
