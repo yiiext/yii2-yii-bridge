@@ -12,7 +12,7 @@ nbproject
 
 # windows thumbnail cache
 Thumbs.db
-/local
+/src/local
 
 # Mac DS_Store Files
 .DS_Store
