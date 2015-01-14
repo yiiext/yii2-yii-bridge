@@ -5,9 +5,8 @@
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/slavcodev/yii-bridge/issues",
-        "forum": "http://www.yiiframework.ru/forum/",
-        "source": "https://github.com/slavcodev/yii-bridge"
+        "issues": "https://github.com/slavcodev/yii2-yii-bridge/issues",
+        "source": "https://github.com/slavcodev/yii2-yii-bridge"
     },
     "authors": [
         {
