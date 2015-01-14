@@ -8,13 +8,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist slavcodev/yii-bridge "*"
+php composer.phar require --prefer-dist slavcodev/yii2-yii-bridge "*"
 ```
 
 or add
 
 ```json
-"slavcodev/yii-bridge": "*"
+"slavcodev/yii2-yii-bridge": "*"
 ```
 
 to the require section of your composer.json.
