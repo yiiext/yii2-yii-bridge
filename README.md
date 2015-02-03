@@ -21,38 +21,90 @@ to the require section of your composer.json.
 
 ### Usage
 
-To use this bridge, edit your entry script (`index.php`)
+To use this bridge, edit your entry scripts (`web/index.php` and `yii`) according to the examples below, which assume that you have put your yii1 application config under `yii1-config/`.
+
+#### ./web/index.php example
+
+Before:
 
 ```php
-// Define project directories.
-$rootPath = dirname(dirname(__DIR__));
-
-/**
- * Include composer autoloader
- * @var \Composer\Autoload\ClassLoader $loader Registered composer autoloader.
- */
-$loader = require($rootPath . '/vendor/autoload.php');
-
-// Load Yii 1 base class
-define('YII1_PATH', $rootPath . '/vendor/yiisoft/yii');
-// Load Yii 2 base class
-define('YII2_PATH', $rootPath . '/vendor/yiisoft/yii2');
-
-// Override base class until v1.1.17 will released.
-// You need version of file after this commit
-// @link https://github.com/yiisoft/yii/commit/e08e47ce3ce503b5eb92f9f9bd14d36ac07e1ae9
-// define('YII1_BASE_PATH', $rootPath . '/vendor/slavcodev/yii-bridge/YiiBase.php');
-
-// Include Yii bridge class file.
-require($rootPath . '/vendor/slavcodev/yii-bridge/Yii.php');
-
-// Create old application, but NOT run it!
-$gaffer = Yii::createWebApplication($v1AppConfig);
-
-// Create new application and run. Have fun!
-$application = new yii\web\Application($v2AppConfig);
+require(__DIR__ . '/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require(__DIR__ . '/../config/bootstrap.php');
+$config = require(__DIR__ . '/../config/main.php');
+$application = new yii\web\Application($config);
 $application->run();
 ```
+
+After:
+
+```php
+require(__DIR__ . '/../vendor/autoload.php');
+
+// Define project directory
+$rootPath = __DIR__;
+
+// Include yii 1 and yii 2
+require("$rootPath/vendor/slavcodev/yii2-yii-bridge/include.php");
+
+// Include yii 1 app config
+$v1AppConfig = require("$rootPath/yii1-config/main.php");
+
+// Create old web application, but NOT run it!
+Yii::createWebApplication($v1AppConfig);
+
+// Include yii 2 app config
+require(__DIR__ . '/../config/bootstrap.php');
+$config = require(__DIR__ . '/../config/main.php');
+$application = new yii\web\Application($config);
+$application->run();
+```
+
+#### ./yii example
+
+Before:
+
+```php
+require(__DIR__ . '/vendor/autoload.php');
+require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require(__DIR__ . '/config/bootstrap.php');
+require(__DIR__ . '/config/main.php');
+$application = new yii\console\Application($config);
+$exitCode = $application->run();
+exit($exitCode);
+```
+
+After:
+
+```php
+require(__DIR__ . '/vendor/autoload.php');
+
+// Define project directory
+$rootPath = __DIR__;
+
+// Include yii 1 and yii 2
+require("$rootPath/vendor/slavcodev/yii2-yii-bridge/include.php");
+
+// Include yii 1 app config
+$v1AppConfig = require("$rootPath/yii1-config/console.php");
+
+// fix for fcgi
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+
+// Create old console application, but NOT run it!
+$yii1app=Yii::createConsoleApplication($v1AppConfig);
+$yii1app->commandRunner->addCommands(YII1_PATH.'/cli/commands');
+
+// Include yii 2 app config
+require(__DIR__ . '/config/bootstrap.php');
+require(__DIR__ . '/config/main.php');
+
+$application = new yii\console\Application($config);
+$exitCode = $application->run();
+exit($exitCode);
+```
+
+####
 
 Now you can use old models in your Yii2 application, i.e
 
