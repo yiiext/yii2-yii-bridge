@@ -42,7 +42,7 @@ After:
 require(__DIR__ . '/../vendor/autoload.php');
 
 // Define project directory
-$rootPath = __DIR__;
+$rootPath = __DIR__ . '/..';
 
 // Include yii 1 and yii 2
 require("$rootPath/vendor/slavcodev/yii2-yii-bridge/include.php");
