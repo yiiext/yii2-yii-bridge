@@ -51,7 +51,7 @@ $gaffer = Yii::createWebApplication($v1AppConfig);
 
 // Create new application and run. Have fun!
 $application = new yii\web\Application($v2AppConfig);
-$gaffer->run();
+$application->run();
 ```
 
 Now you can use old models in your Yii2 application, i.e
