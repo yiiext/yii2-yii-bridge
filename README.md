@@ -1,6 +1,8 @@
 Yii bridge between v1.1.x and v2.0
 ==================================
 
+> Warning: The extension was made for early Yii 2.0 releases and likely does not work with current version.
+
 ### Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
